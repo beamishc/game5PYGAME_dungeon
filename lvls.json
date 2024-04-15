@@ -1,0 +1,23 @@
+{"0": {"BACKGROUND": "assets/tiny_dungeon_prologue.tmx"
+    , "SCREEN_TITLE" : "Prologue"
+    , "SCREEN_WIDTH": "64 * 16"
+    , "SCREEN_HEIGHT": "40 * 16"
+    , "ASSET_PATH": "assets/kenney_tiny-dungeon/"
+    , "PRE_PLAYER": "Tiles/tile_0085.png"
+    , "PLAYER": "Tiles/tile_0084.png"
+    , "ENEMIES": "Tiles/tile_0121.png"
+    , "TREASURE": "Tiles/tile_0089.png"
+    , "SWORD": "Tiles/tile_0106.png"
+  }
+, "1": {"BACKGROUND": "assets/tiny_dungeon_lvl1.tmx"
+    , "SCREEN_TITLE" : "Level 1"
+    , "SCREEN_WIDTH": "64 * 16"
+    , "SCREEN_HEIGHT": "40 * 16"
+    , "ASSET_PATH": "assets/kenney_tiny-dungeon/"
+    , "PRE_PLAYER": "Tiles/tile_0085.png"
+    , "PLAYER": "Tiles/tile_0084.png"
+    , "ENEMIES": "Tiles/tile_0121.png"
+    , "TREASURE": "Tiles/tile_0089.png"
+    , "SWORD": "Tiles/tile_0106.png"
+  }
+}
