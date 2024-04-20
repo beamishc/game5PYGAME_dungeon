@@ -6,6 +6,7 @@ import json
 from gameobject_class import GameObject
 from playercharacter_class import PC
 from nonplayercharacter_class import NPC
+from enemy_class import Enemy
 from spriteclass import SpriteSheet
 
 # print(pygame.font.get_fonts())
@@ -37,7 +38,6 @@ class Game:
         self.enemy_image = lvl_dct["ASSET_PATH"] + lvl_dct['ENEMIES']
         self.sword_image = lvl_dct["ASSET_PATH"] + lvl_dct['SWORD']
         self.treasure_image = lvl_dct["ASSET_PATH"] + lvl_dct['TREASURE']
-        # self.sign = 'old_assets/Tiles/tile_0067.png'
         self.health = save_file["HEALTH"]
         self.damage_taken = False
 
@@ -66,14 +66,8 @@ class Game:
 
         player_character = PC(self.player_image, 384, 720, px_h, px_w)
 
-        enemy_0 = NPC(self.enemy_image, 24, 624, px_h, px_w)
+        enemy_0 = Enemy(self.enemy_image, 24, 624, px_h, px_w)
         enemy_0.SPEED *= level_speed
-
-        enemy_1 = NPC(self.enemy_image, self.width - 48, 384, px_h, px_w)
-        enemy_1.SPEED *= level_speed
-
-        enemy_2 = NPC(self.enemy_image, 24, 192, px_h, px_w)
-        enemy_2.SPEED *= level_speed
 
         # 'source_files/project_files/treasure.png'
         treasure = GameObject(self.treasure_image, 384, 48, px_h, px_w)
@@ -157,17 +151,7 @@ class Game:
             enemy_0.move(self.width)
             enemy_0.draw(self.game_screen)
 
-            if level_speed > 2:
-                enemy_1.move(self.width)
-                enemy_1.draw(self.game_screen)
-
-            if level_speed > 4:
-                enemy_2.move(self.width)
-                enemy_2.draw(self.game_screen)
-
-            collision = sum([player_character.detect_collision(enemy_0)
-                             , player_character.detect_collision(enemy_1)
-                             , player_character.detect_collision(enemy_2)])
+            collision = sum([player_character.detect_collision(enemy_0)])
 
             if collision > 0 and self.damage_taken == False:
                 self.game_screen.fill((255,0,0))
