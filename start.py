@@ -17,7 +17,9 @@ with open("lvls.json") as f:
     lvls = json.load(f)
 
 with open('save_file.json') as f:
-    save_file = json.load(f)[sys.argv[1]]
+    save_dct = json.load(f)
+
+save_file = save_dct[sys.argv[1]]
 
 current_lvl = save_file["CURRENT_LEVEL"]
 
@@ -25,9 +27,16 @@ current_lvl = save_file["CURRENT_LEVEL"]
 pygame.init()
 
 for lvl in [x for x in lvls.keys() if int(x) >= current_lvl]:
+    ic.enable()
     ic(lvl)
-    game_lvl = Game(lvls[lvl], save_file)
-    game_lvl.run_game_loop(1)
+    game_lvl = Game(lvl, lvls[lvl], save_file)
+    game_lvl.run_game_loop()
+    save_dct[sys.argv[1]] = game_lvl.save_file
+
+ic(save_dct)
+
+with open('save_file.json', 'w') as f:
+    json.dump(save_dct, f)
 
 
 # end game

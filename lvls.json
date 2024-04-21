@@ -1,23 +1,93 @@
-{"0": {"BACKGROUND": "assets/tiny_dungeon_prologue.tmx"
-    , "SCREEN_TITLE" : "Prologue"
-    , "SCREEN_WIDTH": "64 * 16"
-    , "SCREEN_HEIGHT": "40 * 16"
-    , "ASSET_PATH": "assets/kenney_tiny-dungeon/"
-    , "PRE_PLAYER": "Tiles/tile_0085.png"
-    , "PLAYER": "Tiles/tile_0084.png"
-    , "ENEMIES": "Tiles/tile_0121.png"
-    , "TREASURE": "Tiles/tile_0089.png"
-    , "SWORD": "Tiles/tile_0106.png"
-  }
-, "1": {"BACKGROUND": "assets/tiny_dungeon_lvl1.tmx"
-    , "SCREEN_TITLE" : "Level 1"
-    , "SCREEN_WIDTH": "64 * 16"
-    , "SCREEN_HEIGHT": "40 * 16"
-    , "ASSET_PATH": "assets/kenney_tiny-dungeon/"
-    , "PRE_PLAYER": "Tiles/tile_0085.png"
-    , "PLAYER": "Tiles/tile_0084.png"
-    , "ENEMIES": "Tiles/tile_0121.png"
-    , "TREASURE": "Tiles/tile_0089.png"
-    , "SWORD": "Tiles/tile_0106.png"
+{
+  "0": {
+    "BACKGROUND": "assets/lvls/0.Prologue/tiny_dungeon_prologue.tmx",
+    "SCREEN_TITLE": "Prologue",
+    "SCREEN_WIDTH": "64 * 16",
+    "SCREEN_HEIGHT": "40 * 16",
+    "ASSET_PATH": "assets/kenney_tiny-dungeon/",
+    "PRE_PLAYER": "Tiles/tile_0085.png",
+    "PLAYER": { "IMAGE": "Tiles/tile_0084.png", "x_pos": 384, "y_pos": 720 },
+    "ENEMIES": {
+      "Ghost": { "IMAGE": "Tiles/tile_0121.png", "x_pos": 400, "y_pos": 500 }
+    },
+    "GOAL": {
+      "NAME": "sword",
+      "IMAGE": "Tiles/tile_0106.png",
+      "x_pos": 42,
+      "y_pos": 2
+    },
+    "NPCS": {},
+    "DOORS": { "DOOR_1": [176, 304] },
+    "ROOMS": {
+      "HOUSE_1": {
+        "DOOR": "DOOR_1",
+        "BACKGROUND": "assets/lvls/0.Prologue/Rooms/Room_1.tmx",
+        "PLAYER_XY": [464, 368],
+        "NPCS": {}
+      },
+      "HOUSE_2": {
+        "DOOR": "DOOR_2",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      },
+      "HOUSE_3": {
+        "DOOR": "DOOR_3",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      },
+      "HOUSE_4": {
+        "DOOR": "DOOR_4",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      }
+    }
+  },
+  "1": {
+    "BACKGROUND": "assets/lvls/1/tiny_dungeon_lvl1.tmx",
+    "SCREEN_TITLE": "Level 1",
+    "SCREEN_WIDTH": "64 * 16",
+    "SCREEN_HEIGHT": "40 * 16",
+    "ASSET_PATH": "assets/kenney_tiny-dungeon/",
+    "PLAYER": { "IMAGE": "Tiles/tile_0084.png", "x_pos": 312, "y_pos": 624 },
+    "ENEMIES": {
+      "Ghost": { "IMAGE": "Tiles/tile_0121.png", "x_pos": 400, "y_pos": 500 }
+    },
+    "GOAL": {
+      "NAME": "treasure chest",
+      "IMAGE": "Tiles/tile_0089.png",
+      "x_pos": 312,
+      "y_pos": 240
+    },
+    "NPCS": {},
+    "DOORS": { "DOOR_1": {} },
+    "ROOMS": {
+      "HOUSE_1": {
+        "DOOR": "DOOR_1",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      },
+      "HOUSE_2": {
+        "DOOR": "DOOR_2",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      },
+      "HOUSE_3": {
+        "DOOR": "DOOR_3",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      },
+      "HOUSE_4": {
+        "DOOR": "DOOR_4",
+        "BACKGROUND": "",
+        "PLAYER_XY": [],
+        "NPCS": {}
+      }
+    }
   }
 }
