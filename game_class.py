@@ -1,17 +1,15 @@
 import pygame
 import pytmx
 import pyscroll
-import os
-import json
 from gameobject_class import GameObject
 from playercharacter_class import PC
 from nonplayercharacter_class import NPC
 from enemy_class import Enemy
 from spriteclass import SpriteSheet
+from icecream import ic
 
 # print(pygame.font.get_fonts())
 
-# dung_asset_path = 'assets/kenney_tiny-dungeon/'
 bit_asset_sheet_path = 'assets/kenney_1-bit-pack/Tilesheet/colored-transparent_packed.png'
 bit_sprite = SpriteSheet(bit_asset_sheet_path, 49, 22, 16, 16, 1)
 
@@ -28,17 +26,23 @@ class Game:
     # Typical rate of 60 , equivalent to FPS
     TICK_RATE = 60
 
-    def __init__(self, lvl_dct, save_file):
+    def __init__(self, current_lvl, lvl_dct, save_file):
+        self.current_lvl = current_lvl
+        self.lvl_dct = lvl_dct
+        self.asset_path = lvl_dct["ASSET_PATH"]
         self.title = lvl_dct['SCREEN_TITLE']
-        self.background = lvl_dct['BACKGROUND']
         self.width = eval(lvl_dct['SCREEN_WIDTH'])
         self.height = eval(lvl_dct['SCREEN_HEIGHT'])
-        self.player_image = lvl_dct["ASSET_PATH"] + lvl_dct['PRE_PLAYER']
-        self.later_player = lvl_dct["ASSET_PATH"] + lvl_dct['PLAYER']
-        self.enemy_image = lvl_dct["ASSET_PATH"] + lvl_dct['ENEMIES']
-        self.sword_image = lvl_dct["ASSET_PATH"] + lvl_dct['SWORD']
-        self.treasure_image = lvl_dct["ASSET_PATH"] + lvl_dct['TREASURE']
-        self.health = save_file["HEALTH"]
+        self.player = lvl_dct["PLAYER"]
+        self.enemies = lvl_dct['ENEMIES']
+        self.goal = lvl_dct['GOAL']
+        self.npcs = lvl_dct['NPCS']
+        self.doors = lvl_dct['DOORS']
+        self.rooms = lvl_dct['ROOMS']
+        self.save_file = save_file
+        self.health = save_file["CURRENT_HEALTH"]
+
+        # settings
         self.damage_taken = False
 
         # create the game screen
@@ -53,10 +57,9 @@ class Game:
         self.game_screen.fill(WHITE_COLOR)
         pygame.display.set_caption(self.title)
 
-        # tmxdata = pytmx.TiledMap(self.background)
-        self.gameMap = pytmx.load_pygame(self.background)
+        self.gameMap = pytmx.load_pygame(self.lvl_dct['BACKGROUND'])
 
-    def run_game_loop(self, level_speed):
+    def run_game_loop(self):
         is_game_over = False
         did_win = False
         direction_up_down = 0
@@ -64,25 +67,47 @@ class Game:
         px_h = 16
         px_w = 16
 
-        player_character = PC(self.player_image, 384, 720, px_h, px_w)
+        player_character = PC(self.save_file["NAME"]
+                            , self.asset_path + self.player["IMAGE"]
+                            , self.player["x_pos"]
+                            , self.player["y_pos"]
+                            , px_h, px_w)
 
-        enemy_0 = Enemy(self.enemy_image, 24, 624, px_h, px_w)
-        enemy_0.SPEED *= level_speed
+        enemies = []
+        for enemy in self.enemies:
+            enemies.append(Enemy(enemy
+                            , self.asset_path + self.enemies[enemy]["IMAGE"]
+                            , self.enemies[enemy]["x_pos"]
+                            , self.enemies[enemy]["y_pos"]
+                            , px_h, px_w))
 
-        # 'source_files/project_files/treasure.png'
-        treasure = GameObject(self.treasure_image, 384, 48, px_h, px_w)
-        sword = GameObject(self.sword_image, 384, 48, px_h, px_w)
+        # define goal
+        goal = GameObject(self.goal["NAME"]
+                        , self.asset_path + self.goal["IMAGE"]
+                        , self.goal["x_pos"]
+                        , self.goal["y_pos"]
+                        , px_h, px_w)
 
-        # signage = GameObject(self.sign, 336, 672, px_h, px_w)
+        # create hearts
+        hearts = []
+        for i in range(1, (self.save_file["MAX_HEALTH"]//2)+1):
+            hearts.append(GameObject("heart", self.heart, self.width - px_w*i, 0, px_h, px_w, sprite=True))
 
-        heart1_x = self.width - (px_w*3)
-        heart2_x = self.width - (px_w*2)
-        heart3_x = self.width - px_w
-        heart_y = 0
+        # define walls
+        walls = []
 
-        heart1 = GameObject(self.heart, heart1_x, heart_y, px_h, px_w, sprite=True)
-        heart2 = GameObject(self.heart, heart2_x, heart_y, px_h, px_w, sprite=True)
-        heart3 = GameObject(self.heart, heart3_x, heart_y, px_h, px_w, sprite=True)
+        for obj in self.gameMap.objects:
+            if obj.type == "wall":
+                walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+        doors = []
+
+        for door in doors:
+            doors.append(GameObject(door
+                        , self.asset_path + self.doors[door]["IMAGE"]
+                        , self.doors[door]["x_pos"]
+                        , self.doors[door]["y_pos"]
+                        , px_h, px_w))
 
         # Main loop of game - runs until is_game_over == True
         while not is_game_over:
@@ -125,76 +150,67 @@ class Game:
 
             # Clear screen
             self.game_screen.fill(WHITE_COLOR)
+
+            # display map
             for layer in self.gameMap.visible_layers:
                 for x, y, gid, in layer:
                     tile = self.gameMap.get_tile_image_by_gid(gid)
                     if(tile != None):
                         self.game_screen.blit(tile, (x * self.gameMap.tilewidth, y * self.gameMap.tileheight))
 
-            if level_speed == 1:
-                sword.draw(self.game_screen)
-            else:
-                treasure.draw(self.game_screen)
+            # draw stuff
+            goal.draw(self.game_screen)
 
-            # signage.draw(self.game_screen)
-
-            heart1.draw(self.game_screen)
-            heart2.draw(self.game_screen)
-            heart3.draw(self.game_screen)
+            for heart in hearts:
+                heart.draw(self.game_screen)
 
             # Update player position
-            player_character.move(direction_up_down, direction_left_right, self.height, self.width)
+            player_character.move(direction_up_down, direction_left_right, self.height, self.width, walls, doors)
 
             # Display player at new position
             player_character.draw(self.game_screen)
 
-            enemy_0.move(self.width)
-            enemy_0.draw(self.game_screen)
+            for enemy in enemies:
+                enemy.move(self.width)
+                enemy.draw(self.game_screen)
+                collision = sum([player_character.detect_collision(enemy)])
 
-            collision = sum([player_character.detect_collision(enemy_0)])
+                if collision > 0 and self.damage_taken == False:
+                    self.game_screen.fill((255,0,0))
+                    self.health -= 1
+                # TODO: FIX inexplicable heart problem
+                if self.health != self.save_file["MAX_HEALTH"]:
+                    self.damage_taken = True
+                    diff = self.save_file["MAX_HEALTH"] - self.health
+                    if diff == 1:
+                        hearts[-1] = GameObject("heart", self.halflife, self.width - px_w, 0, px_h, px_w, sprite=True)
+                    if diff == 2:
+                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                    if diff == 3:
+                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                        hearts[-2] = GameObject("heart", self.halflife, self.width - px_w*2, 0, px_h, px_w, sprite=True)
+                    if diff == 4:
+                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                        hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
+                    if diff == 5:
+                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                        hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
+                        hearts[-3] = GameObject("heart", self.halflife, self.width - px_w*3, 0, px_h, px_w, sprite=True)
 
-            if collision > 0 and self.damage_taken == False:
-                self.game_screen.fill((255,0,0))
-                self.health -= 1
+                if collision == 0:
+                    self.damage_taken = False
 
-            if self.health == 5:
-                self.damage_taken = True
-                heart3 = GameObject(self.halflife, heart3_x, heart_y, px_h, px_w, sprite=True)
+                if self.health == 0:
+                    self.damage_taken = True
+                    is_game_over = True
+                    did_win = False
+                    text = font.render('YOU LOSE!', True, BLACK_COLOR)
+                    self.game_screen.blit(text, (200, 350))
+                    pygame.display.update()
+                    clock.tick(1)
+                    break
 
-            if self.health == 4:
-                self.damage_taken = True
-                heart3 = GameObject(self.heartless, heart3_x, heart_y, px_h, px_w, sprite=True)
-
-            if self.health == 3:
-                self.damage_taken = True
-                heart3 = GameObject(self.heartless, heart3_x, heart_y, px_h, px_w, sprite=True)
-                heart2 = GameObject(self.halflife, heart2_x, heart_y, px_h, px_w, sprite=True)
-
-            if self.health == 2:
-                self.damage_taken = True
-                heart3 = GameObject(self.heartless, heart3_x, heart_y, px_h, px_w, sprite=True)
-                heart2 = GameObject(self.heartless, heart2_x, heart_y, px_h, px_w, sprite=True)
-
-            if self.health == 1:
-                self.damage_taken = True
-                heart3 = GameObject(self.heartless, heart3_x, heart_y, px_h, px_w, sprite=True)
-                heart2 = GameObject(self.heartless, heart2_x, heart_y, px_h, px_w, sprite=True)
-                heart1 = GameObject(self.halflife, heart1_x, heart_y, px_h, px_w, sprite=True)
-
-            if collision == 0:
-                self.damage_taken = False
-
-            if self.health == 0:
-                self.damage_taken = True
-                is_game_over = True
-                did_win = False
-                text = font.render('YOU LOSE!', True, BLACK_COLOR)
-                self.game_screen.blit(text, (200, 350))
-                pygame.display.update()
-                clock.tick(1)
-                break
-
-            elif player_character.detect_collision(treasure):
+            if player_character.detect_collision(goal):
                 is_game_over = True
                 did_win = True
                 text = font.render('YOU WIN!', True, BLACK_COLOR)
@@ -205,11 +221,20 @@ class Game:
 
             # updates all game graphics
             pygame.display.update()
+
             # tick the clock to update everything in the game
             clock.tick(self.TICK_RATE)
 
         if did_win:
-            self.player_image = self.later_player
-            self.run_game_loop(level_speed + 0.5)
+            self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
+            if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
+                self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
+            self.save_file["CURRENT_HEALTH"] = self.health
+            return self.save_file
         else:
-            return
+            self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
+            if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
+                self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
+            self.save_file["CURRENT_HEALTH"] = self.save_file["MAX_HEALTH"]
+            self.save_file["TIMES_DIED"] += 1
+            return self.save_file

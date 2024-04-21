@@ -1,14 +1,12 @@
 from gameobject_class import GameObject
 from icecream import ic
 
-ic.disable()
-
 class Enemy(GameObject):
 
     SPEED = 5
 
-    def __init__(self, image_path, x, y, width, height):
-        super().__init__(image_path, x, y, width, height)
+    def __init__(self, asset_name, image_path, x, y, width, height):
+        super().__init__(asset_name, image_path, x, y, width, height)
         self.y_float = 0
         self.y_up = True
 
@@ -19,8 +17,8 @@ class Enemy(GameObject):
             self.SPEED = -abs(self.SPEED)
         self.x_pos += self.SPEED
 
-        ic("-----START-----")
-        ic(self.y_float)
+        # ic("-----START-----")
+        # ic(self.y_float)
 
         if self.y_float >= 5:
             self.y_up = False
@@ -28,7 +26,7 @@ class Enemy(GameObject):
         if self.y_float <= 0:
             self.y_up = True
 
-        ic(self.y_up)
+        # ic(self.y_up)
 
         if self.y_up == True:
             self.y_float += 0.1
@@ -38,7 +36,7 @@ class Enemy(GameObject):
             self.y_float -= 0.1
             self.y_pos -= 0.1
 
-        ic(self.y_float)
+        # ic(self.y_float)
 
-        ic(self.y_pos)
-        ic("------END------")
+        # ic(self.y_pos)
+        # ic("------END------")

@@ -4,8 +4,8 @@ class NPC(GameObject):
 
     SPEED = 1
 
-    def __init__(self, image_path, x, y, width, height):
-        super().__init__(image_path, x, y, width, height)
+    def __init__(self, asset_name, image_path, x, y, width, height):
+        super().__init__(asset_name, image_path, x, y, width, height)
         self.y_walk = 0
         self.y_up = True
 
