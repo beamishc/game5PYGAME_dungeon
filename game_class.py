@@ -12,6 +12,9 @@ from icecream import ic
 
 bit_asset_sheet_path = 'assets/kenney_1-bit-pack/Tilesheet/colored-transparent_packed.png'
 bit_sprite = SpriteSheet(bit_asset_sheet_path, 49, 22, 16, 16, 1)
+door_asset_sheet_path = 'assets/lvls/0.Prologue/Walls, Floor & Doors.png'
+bit_sprite = SpriteSheet(bit_asset_sheet_path, 8, 5, 16, 16, 0)
+
 
 # RGB color codes
 WHITE_COLOR = (255, 255, 255)
@@ -27,18 +30,26 @@ class Game:
     TICK_RATE = 60
 
     def __init__(self, current_lvl, lvl_dct, save_file):
+        # current level
         self.current_lvl = current_lvl
+
+        # basic info
         self.lvl_dct = lvl_dct
         self.asset_path = lvl_dct["ASSET_PATH"]
         self.title = lvl_dct['SCREEN_TITLE']
         self.width = eval(lvl_dct['SCREEN_WIDTH'])
         self.height = eval(lvl_dct['SCREEN_HEIGHT'])
+
+        # lvl specific content
         self.player = lvl_dct["PLAYER"]
+        self.location = lvl_dct["MAIN_LOCATION"]
         self.enemies = lvl_dct['ENEMIES']
         self.goal = lvl_dct['GOAL']
         self.npcs = lvl_dct['NPCS']
         self.doors = lvl_dct['DOORS']
         self.rooms = lvl_dct['ROOMS']
+
+        #save file content
         self.save_file = save_file
         self.health = save_file["CURRENT_HEALTH"]
 
@@ -52,12 +63,11 @@ class Game:
         self.heart = bit_sprite.image_at(10, 39)
         self.halflife = bit_sprite.image_at(10, 41)
         self.heartless = bit_sprite.image_at(10, 40)
+        self.door_image = bit_sprite.image_at(3, 5)
 
         # set the game screen to white
         self.game_screen.fill(WHITE_COLOR)
         pygame.display.set_caption(self.title)
-
-        self.gameMap = pytmx.load_pygame(self.lvl_dct['BACKGROUND'])
 
     def run_game_loop(self):
         is_game_over = False
@@ -93,24 +103,32 @@ class Game:
         for i in range(1, (self.save_file["MAX_HEALTH"]//2)+1):
             hearts.append(GameObject("heart", self.heart, self.width - px_w*i, 0, px_h, px_w, sprite=True))
 
-        # define walls
-        walls = []
-
-        for obj in self.gameMap.objects:
-            if obj.type == "wall":
-                walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
         doors = []
 
-        for door in doors:
+        for door in self.doors:
             doors.append(GameObject(door
-                        , self.asset_path + self.doors[door]["IMAGE"]
+                        , self.door_image
                         , self.doors[door]["x_pos"]
                         , self.doors[door]["y_pos"]
-                        , px_h, px_w))
+                        , px_h, px_w, sprite=True))
+
+        rooms = {}
+
+        for room in self.rooms:
+            rooms[self.rooms[room]["DOOR"]] = room
 
         # Main loop of game - runs until is_game_over == True
         while not is_game_over:
+
+            self.gameMap = pytmx.load_pygame(self.rooms[self.location]['BACKGROUND'])
+
+            # define walls
+            walls = []
+
+            for obj in self.gameMap.objects:
+                if obj.type == "wall":
+                    walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
             # checks all events that occur
             for event in pygame.event.get():
@@ -210,6 +228,14 @@ class Game:
                     clock.tick(1)
                     break
 
+            for door in doors:
+                if player_character.detect_collision(door):
+                    self.location = rooms[door.asset_name]
+                    ic(type(self.rooms[self.location]))
+                    ic(self.rooms[self.location]["x_pos"])
+                    player_character.x_pos = self.rooms[self.location]["x_pos"]
+                    player_character.y_pos = self.rooms[self.location]["y_pos"]
+
             if player_character.detect_collision(goal):
                 is_game_over = True
                 did_win = True
@@ -224,6 +250,7 @@ class Game:
 
             # tick the clock to update everything in the game
             clock.tick(self.TICK_RATE)
+        ic(self.location)
 
         if did_win:
             self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)

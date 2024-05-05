@@ -1,10 +1,10 @@
 {
   "0": {
-    "BACKGROUND": "assets/lvls/0.Prologue/tiny_dungeon_prologue.tmx",
     "SCREEN_TITLE": "Prologue",
     "SCREEN_WIDTH": "64 * 16",
     "SCREEN_HEIGHT": "40 * 16",
     "ASSET_PATH": "assets/kenney_tiny-dungeon/",
+    "MAIN_LOCATION": "main_map",
     "PRE_PLAYER": "Tiles/tile_0085.png",
     "PLAYER": { "IMAGE": "Tiles/tile_0084.png", "x_pos": 384, "y_pos": 720 },
     "ENEMIES": {
@@ -17,29 +17,35 @@
       "y_pos": 2
     },
     "NPCS": {},
-    "DOORS": { "DOOR_1": [176, 304] },
+    "DOORS": { "DOOR_1": {
+                "x_pos": 176
+                ,"y_pos": 304} },
     "ROOMS": {
+      "main_map": {
+        "BACKGROUND": "assets/lvls/0.Prologue/tiny_dungeon_prologue.tmx",
+        "DOOR": "DOOR_OUT"},
       "HOUSE_1": {
-        "DOOR": "DOOR_1",
         "BACKGROUND": "assets/lvls/0.Prologue/Rooms/Room_1.tmx",
-        "PLAYER_XY": [464, 368],
+        "DOOR": "DOOR_1",
+        "x_pos": 464,
+        "y_pos": 352,
         "NPCS": {}
       },
       "HOUSE_2": {
-        "DOOR": "DOOR_2",
         "BACKGROUND": "",
+        "DOOR": "DOOR_2",
         "PLAYER_XY": [],
         "NPCS": {}
       },
       "HOUSE_3": {
-        "DOOR": "DOOR_3",
         "BACKGROUND": "",
+        "DOOR": "DOOR_3",
         "PLAYER_XY": [],
         "NPCS": {}
       },
       "HOUSE_4": {
-        "DOOR": "DOOR_4",
         "BACKGROUND": "",
+        "DOOR": "DOOR_4",
         "PLAYER_XY": [],
         "NPCS": {}
       }
@@ -51,6 +57,7 @@
     "SCREEN_WIDTH": "64 * 16",
     "SCREEN_HEIGHT": "40 * 16",
     "ASSET_PATH": "assets/kenney_tiny-dungeon/",
+    "MAIN_LOCATION": "main_map",
     "PLAYER": { "IMAGE": "Tiles/tile_0084.png", "x_pos": 312, "y_pos": 624 },
     "ENEMIES": {
       "Ghost": { "IMAGE": "Tiles/tile_0121.png", "x_pos": 400, "y_pos": 500 }
@@ -62,8 +69,11 @@
       "y_pos": 240
     },
     "NPCS": {},
-    "DOORS": { "DOOR_1": {} },
+    "DOORS": {},
     "ROOMS": {
+      "main_map": {
+        "BACKGROUND": "assets/lvls/1/tiny_dungeon_lvl1.tmx",
+        "DOOR": "DOOR_OUT"},
       "HOUSE_1": {
         "DOOR": "DOOR_1",
         "BACKGROUND": "",
