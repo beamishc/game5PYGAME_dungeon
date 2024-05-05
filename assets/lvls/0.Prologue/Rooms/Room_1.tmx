@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="64" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="1">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="64" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="12">
  <tileset firstgid="1" source="../../../../../assets/Showcase.tsx"/>
  <tileset firstgid="4625" source="../../../../../assets/Walls, Floor &amp; Doors.tsx"/>
  <tileset firstgid="4665" source="../../../../../assets/Carpets.tsx"/>
@@ -180,4 +180,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="5" name="Object Layer 1" visible="0">
+  <object id="7" name="wall" type="wall" x="416.5" y="304.5" width="111.25" height="16.25"/>
+  <object id="8" name="wall" type="wall" x="416.5" y="369" width="51.75" height="15.75"/>
+  <object id="9" name="wall" type="wall" x="416.75" y="320.75" width="14.75" height="48.25"/>
+  <object id="10" name="wall" type="wall" x="512.75" y="321.25" width="14.25" height="47.5"/>
+  <object id="11" name="wall" type="wall" x="480.25" y="368.75" width="47.5" height="15"/>
+ </objectgroup>
+ <objectgroup id="6" name="Object Layer 2" visible="0">
+  <object id="1" name="stuff" type="stuff" x="468" y="320.5" width="43.75" height="15.5"/>
+  <object id="2" name="bed" type="stuff" x="432.25" y="321.5" width="16" height="14.5"/>
+  <object id="3" name="table" type="stuff" x="433" y="352.75" width="14.75" height="15.25"/>
+  <object id="4" name="stool" type="stuff" x="435.25" y="339.5" width="9.75" height="10.75"/>
+  <object id="5" name="stool" type="stuff" x="451.5" y="355.75" width="9.5" height="10.25"/>
+  <object id="6" name="barrel" type="stuff" x="499.75" y="355.75" width="8" height="9.25"/>
+ </objectgroup>
 </map>

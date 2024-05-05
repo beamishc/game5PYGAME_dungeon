@@ -42,10 +42,6 @@ class PC(GameObject):
                 elif direction_up_down > 0:  # We're moving downwards
                     self.y_pos = wall[1] + wall[3]
 
-        for door in doors:
-            if self.detect_collision(door):
-                ic("LOOK A DOOR!")
-
     def detect_collision(self, other_body):
         if self.y_pos > other_body.y_pos + other_body.height or self.y_pos + self.height < other_body.y_pos:
             return False
