@@ -1,4 +1,4 @@
-from gameobject_class import GameObject
+from classes.base_classes.gameobject_class import GameObject
 from icecream import ic
 
 class PC(GameObject):
