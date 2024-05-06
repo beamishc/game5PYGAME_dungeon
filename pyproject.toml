@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "game5PYGAME_dungeon"
+version = "0.1.0"
+description = "A dungeon game built with Pygame"
+authors = ["Catriona Beamish"]
+
+repository = "https://github.com/beamishc/game5PYGAME_dungeon"
+readme = ["README.md"]
+
+[tool.poetry.dependencies]
+# Compatible Python versions
+python = "^3.9"
+pygame = "^2.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

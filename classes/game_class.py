@@ -154,6 +154,7 @@ class Game:
 
         return is_game_over, direction_up_down, direction_left_right
 
+    # TODO: FIX inexplicable heart problem
     def check_health(self, hearts, px_w, px_h):
         '''Checks the health of the player compared to their maxiumum possible health.
         Depending on the health the hearts in the hearts list should be adjusted to display as half full or empty.
@@ -177,6 +178,45 @@ class Game:
                 hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
                 hearts[-3] = GameObject("heart", self.halflife, self.width - px_w*3, 0, px_h, px_w, sprite=True)
         return hearts
+
+    def draw_map_and_basics(self, goal, hearts):
+        '''Draws the map and the basic game objects on the screen'''
+        for layer in self.gameMap.visible_layers:
+                for x, y, gid, in layer:
+                    tile = self.gameMap.get_tile_image_by_gid(gid)
+                    if(tile != None):
+                        self.game_screen.blit(tile, (x * self.gameMap.tilewidth, y * self.gameMap.tileheight))
+
+        # draw stuff
+        goal.draw(self.game_screen)
+
+        for heart in hearts:
+            heart.draw(self.game_screen)
+
+    def enemy_actions(self, enemy, player_character, px_w, px_h, hearts):
+        enemy.move(self.width)
+        enemy.draw(self.game_screen)
+        collision = sum([player_character.detect_collision(enemy)])
+
+        if collision > 0 and self.damage_taken == False:
+            self.game_screen.fill((255,0,0))
+            self.health -= 1
+
+            hearts = self.check_health(hearts, px_w, px_h)
+
+        if collision == 0:
+            self.damage_taken = False
+
+        return hearts
+
+    def door_check(self, doors, rooms,  player_character):
+        '''Checks if the player has collided with a door and changes the location to the room that the door leads to'''
+        for door in doors:
+            if player_character.detect_collision(door):
+                self.location = rooms[door.asset_name]
+                player_character.x_pos = self.rooms[self.location]["x_pos"]
+                player_character.y_pos = self.rooms[self.location]["y_pos"]
+        return player_character
 
     def run_game_loop(self):
         '''Runs the main game loop for each level'''
@@ -203,39 +243,17 @@ class Game:
             self.game_screen.fill(WHITE_COLOR)
 
             # display map
-            for layer in self.gameMap.visible_layers:
-                for x, y, gid, in layer:
-                    tile = self.gameMap.get_tile_image_by_gid(gid)
-                    if(tile != None):
-                        self.game_screen.blit(tile, (x * self.gameMap.tilewidth, y * self.gameMap.tileheight))
+            self.draw_map_and_basics(goal, hearts)
 
-            # draw stuff
-            goal.draw(self.game_screen)
-
-            for heart in hearts:
-                heart.draw(self.game_screen)
-
+            ## PLAYER MOVEMENT
             # Update player position
             player_character.move(direction_up_down, direction_left_right, self.height, self.width, walls, doors)
-
             # Display player at new position
             player_character.draw(self.game_screen)
 
+            ## ENEMY MOVEMENT
             for enemy in enemies:
-                enemy.move(self.width)
-                enemy.draw(self.game_screen)
-                collision = sum([player_character.detect_collision(enemy)])
-
-                if collision > 0 and self.damage_taken == False:
-                    self.game_screen.fill((255,0,0))
-                    self.health -= 1
-
-                    # TODO: FIX inexplicable heart problem
-                    hearts = self.check_health(hearts, px_w, px_h)
-
-
-                if collision == 0:
-                    self.damage_taken = False
+                hearts = self.enemy_actions(enemy, player_character, px_w, px_h, hearts)
 
                 if self.health == 0:
                     self.damage_taken = True
@@ -247,13 +265,7 @@ class Game:
                     clock.tick(1)
                     break
 
-            for door in doors:
-                if player_character.detect_collision(door):
-                    self.location = rooms[door.asset_name]
-                    ic(type(self.rooms[self.location]))
-                    ic(self.rooms[self.location]["x_pos"])
-                    player_character.x_pos = self.rooms[self.location]["x_pos"]
-                    player_character.y_pos = self.rooms[self.location]["y_pos"]
+            player_character = self.door_check(doors, rooms, player_character)
 
             if player_character.detect_collision(goal):
                 is_game_over = True
@@ -269,18 +281,21 @@ class Game:
 
             # tick the clock to update everything in the game
             clock.tick(self.TICK_RATE)
+
         ic(self.location)
 
+        # update current level and highest levels in save_file
+        self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
+        if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
+            self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
+
         if did_win:
-            self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
-            if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
-                self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
+            # update current health in save_file
             self.save_file["CURRENT_HEALTH"] = self.health
-            return did_win
         else:
-            self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
-            if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
-                self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
+            # return current health in save file to max health
             self.save_file["CURRENT_HEALTH"] = self.save_file["MAX_HEALTH"]
+            # add 1 to times died in save file
             self.save_file["TIMES_DIED"] += 1
-            return did_win
+
+        return did_win
