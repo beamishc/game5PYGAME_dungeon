@@ -100,8 +100,9 @@ class Game:
         # create hearts
         hearts = []
         for i in range(1, (self.save_file["MAX_HEALTH"]//2)+1):
+            ic(i)
             hearts.append(GameObject("heart", self.heart, self.width - px_w*i, 0, px_h, px_w, sprite=True))
-
+        ic(hearts)
 
         doors = []
 
@@ -194,6 +195,7 @@ class Game:
             heart.draw(self.game_screen)
 
     def enemy_actions(self, enemy, player_character, px_w, px_h, hearts):
+        '''Moves the enemy and checks for collisions with the player character. If a collision is detected the player loses health.'''
         enemy.move(self.width)
         enemy.draw(self.game_screen)
         collision = sum([player_character.detect_collision(enemy)])
