@@ -1,6 +1,6 @@
 import pygame
 import pytmx
-import pyscroll
+# import pyscroll
 from classes.base_classes.gameobject_class import GameObject
 from classes.playercharacter_class import PC
 from classes.nonplayercharacter_class import NPC
@@ -257,11 +257,11 @@ class Game:
             if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
                 self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
             self.save_file["CURRENT_HEALTH"] = self.health
-            return self.save_file
+            return did_win
         else:
             self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
             if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
                 self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
             self.save_file["CURRENT_HEALTH"] = self.save_file["MAX_HEALTH"]
             self.save_file["TIMES_DIED"] += 1
-            return self.save_file
+            return did_win
