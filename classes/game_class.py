@@ -30,6 +30,7 @@ class Game:
     TICK_RATE = 60
 
     def __init__(self, current_lvl, lvl_dct, save_file):
+        '''Initalises the level using the dict for that level and the player's save file'''
         # current level
         self.current_lvl = current_lvl
 
@@ -69,11 +70,9 @@ class Game:
         self.game_screen.fill(WHITE_COLOR)
         pygame.display.set_caption(self.title)
 
-    def run_game_loop(self):
-        is_game_over = False
-        did_win = False
-        direction_up_down = 0
-        direction_left_right = 0
+    def set_scene(self):
+        '''Uses classes to create player_character, enemeies, goal, hearts, doors, and rooms'''
+
         px_h = 16
         px_w = 16
 
@@ -118,53 +117,87 @@ class Game:
         for room in self.rooms:
             rooms[self.rooms[room]["DOOR"]] = room
 
+        return px_h, px_w, player_character, enemies, goal, hearts, doors, rooms
+
+    def check_input(self, event, is_game_over, direction_up_down, direction_left_right):
+        '''Checks the input from the keys and changes the direction or quits the game'''
+        # quit event closes game
+        if event.type == pygame.QUIT:
+            is_game_over = True
+
+        # detect when key pressed
+        elif event.type == pygame.KEYDOWN:
+
+            # move forward if key up pressed
+            if event.key ==pygame.K_UP:
+                direction_up_down = 1
+
+            # move back if key up pressed
+            elif event.key == pygame.K_DOWN:
+                direction_up_down = -1
+
+            elif event.key == pygame.K_LEFT:
+                direction_left_right = -1
+
+            elif event.key == pygame.K_RIGHT:
+                direction_left_right = 1
+
+        # detect when key lifted
+        elif event.type == pygame.KEYUP:
+
+            # stop moving when key lifted
+            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                direction_up_down = 0
+
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                direction_left_right = 0
+
+        return is_game_over, direction_up_down, direction_left_right
+
+    def check_health(self, hearts, px_w, px_h):
+        '''Checks the health of the player compared to their maxiumum possible health.
+        Depending on the health the hearts in the hearts list should be adjusted to display as half full or empty.
+        Currently hardcoded, badly needs to be improved'''
+
+        if self.health != self.save_file["MAX_HEALTH"]:
+            self.damage_taken = True
+            diff = self.save_file["MAX_HEALTH"] - self.health
+            if diff == 1:
+                hearts[-1] = GameObject("heart", self.halflife, self.width - px_w, 0, px_h, px_w, sprite=True)
+            if diff == 2:
+                hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+            if diff == 3:
+                hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                hearts[-2] = GameObject("heart", self.halflife, self.width - px_w*2, 0, px_h, px_w, sprite=True)
+            if diff == 4:
+                hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
+            if diff == 5:
+                hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
+                hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
+                hearts[-3] = GameObject("heart", self.halflife, self.width - px_w*3, 0, px_h, px_w, sprite=True)
+        return hearts
+
+    def run_game_loop(self):
+        '''Runs the main game loop for each level'''
+        is_game_over = False
+        did_win = False
+        direction_up_down = 0
+        direction_left_right = 0
+
+        px_h, px_w, player_character, enemies, goal, hearts, doors, rooms = self.set_scene()
+
         # Main loop of game - runs until is_game_over == True
         while not is_game_over:
 
             self.gameMap = pytmx.load_pygame(self.rooms[self.location]['BACKGROUND'])
 
             # define walls
-            walls = []
-
-            for obj in self.gameMap.objects:
-                if obj.type == "wall":
-                    walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            walls = [pygame.Rect(obj.x, obj.y, obj.width, obj.height) for obj in self.gameMap.objects if obj.type == "wall"]
 
             # checks all events that occur
             for event in pygame.event.get():
-
-                # quit event closes game
-                if event.type == pygame.QUIT:
-                    is_game_over = True
-
-                # detect when key pressed
-                elif event.type == pygame.KEYDOWN:
-
-                    # move forward if key up pressed
-                    if event.key ==pygame.K_UP:
-                        direction_up_down = 1
-
-                    # move back if key up pressed
-                    elif event.key == pygame.K_DOWN:
-                        direction_up_down = -1
-
-                    elif event.key == pygame.K_LEFT:
-                        direction_left_right = -1
-
-                    elif event.key == pygame.K_RIGHT:
-                        direction_left_right = 1
-
-                # detect when key lifted
-                elif event.type == pygame.KEYUP:
-
-                    # stop moving when key lifted
-                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                        direction_up_down = 0
-
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        direction_left_right = 0
-
-                # print(event)
+                is_game_over, direction_up_down, direction_left_right = self.check_input(event, is_game_over, direction_up_down, direction_left_right)
 
             # Clear screen
             self.game_screen.fill(WHITE_COLOR)
@@ -196,24 +229,10 @@ class Game:
                 if collision > 0 and self.damage_taken == False:
                     self.game_screen.fill((255,0,0))
                     self.health -= 1
-                # TODO: FIX inexplicable heart problem
-                if self.health != self.save_file["MAX_HEALTH"]:
-                    self.damage_taken = True
-                    diff = self.save_file["MAX_HEALTH"] - self.health
-                    if diff == 1:
-                        hearts[-1] = GameObject("heart", self.halflife, self.width - px_w, 0, px_h, px_w, sprite=True)
-                    if diff == 2:
-                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
-                    if diff == 3:
-                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
-                        hearts[-2] = GameObject("heart", self.halflife, self.width - px_w*2, 0, px_h, px_w, sprite=True)
-                    if diff == 4:
-                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
-                        hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
-                    if diff == 5:
-                        hearts[-1] = GameObject("heart", self.heartless, self.width - px_w, 0, px_h, px_w, sprite=True)
-                        hearts[-2] = GameObject("heart", self.heartless, self.width - px_w*2, 0, px_h, px_w, sprite=True)
-                        hearts[-3] = GameObject("heart", self.halflife, self.width - px_w*3, 0, px_h, px_w, sprite=True)
+
+                    # TODO: FIX inexplicable heart problem
+                    hearts = self.check_health(hearts, px_w, px_h)
+
 
                 if collision == 0:
                     self.damage_taken = False
