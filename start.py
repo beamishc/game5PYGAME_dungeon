@@ -1,7 +1,7 @@
 import pygame
 import json
 import sys
-from game_class import Game
+from classes.game_class import Game
 from icecream import ic
 
 # RGB color codes
@@ -30,8 +30,10 @@ for lvl in [x for x in lvls.keys() if int(x) >= current_lvl]:
     ic.enable()
     ic(lvl)
     game_lvl = Game(lvl, lvls[lvl], save_file)
-    game_lvl.run_game_loop()
+    did_win = game_lvl.run_game_loop()
     save_dct[sys.argv[1]] = game_lvl.save_file
+    if did_win == False:
+        break
 
 ic(save_dct)
 
