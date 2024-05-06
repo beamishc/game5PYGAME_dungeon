@@ -1,8 +1,9 @@
 import pygame
 import json
 import sys
+
 from classes.game_class import Game
-from check_files import check_files
+from functions.check_files import check_files
 from icecream import ic
 
 # RGB color codes
@@ -13,11 +14,11 @@ BLACK_COLOR = (0, 0, 0)
 clock = pygame.time.Clock()
 
 # load all levels dictionaries
-with open("lvls.json") as f:
+with open("json/lvls.json") as f:
     lvls = json.load(f)
 
 # load all save file dictionaries
-with open('save_file.json') as f:
+with open('json/save_file.json') as f:
     save_dct = json.load(f)
 
 # check a player name is provided
@@ -67,7 +68,7 @@ for lvl in [x for x in lvls.keys() if int(x) >= current_lvl]:
 ic(save_dct)
 
 # dump save file back to json
-with open('save_file.json', 'w') as f:
+with open('json/save_file.json', 'w') as f:
     json.dump(save_dct, f)
 
 
