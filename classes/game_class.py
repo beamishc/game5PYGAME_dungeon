@@ -1,11 +1,11 @@
 import pygame
 import pytmx
 import pyscroll
-from gameobject_class import GameObject
-from playercharacter_class import PC
-from nonplayercharacter_class import NPC
-from enemy_class import Enemy
-from spriteclass import SpriteSheet
+from classes.base_classes.gameobject_class import GameObject
+from classes.playercharacter_class import PC
+from classes.nonplayercharacter_class import NPC
+from classes.enemy_class import Enemy
+from classes.base_classes.spriteclass import SpriteSheet
 from icecream import ic
 
 # print(pygame.font.get_fonts())

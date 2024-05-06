@@ -1,13 +1,12 @@
-from gameobject_class import GameObject
-from icecream import ic
+from classes.base_classes.gameobject_class import GameObject
 
-class Enemy(GameObject):
+class NPC(GameObject):
 
-    SPEED = 5
+    SPEED = 1
 
     def __init__(self, asset_name, image_path, x, y, width, height):
         super().__init__(asset_name, image_path, x, y, width, height)
-        self.y_float = 0
+        self.y_walk = 0
         self.y_up = True
 
     def move(self, max_width):
@@ -17,26 +16,16 @@ class Enemy(GameObject):
             self.SPEED = -abs(self.SPEED)
         self.x_pos += self.SPEED
 
-        # ic("-----START-----")
-        # ic(self.y_float)
-
-        if self.y_float >= 5:
+        if self.y_walk >= 1:
             self.y_up = False
 
-        if self.y_float <= 0:
+        if self.y_walk <= 0:
             self.y_up = True
 
-        # ic(self.y_up)
-
         if self.y_up == True:
-            self.y_float += 0.1
+            self.y_walk += 0.1
             self.y_pos += 0.1
 
         if self.y_up == False:
-            self.y_float -= 0.1
+            self.y_walk -= 0.1
             self.y_pos -= 0.1
-
-        # ic(self.y_float)
-
-        # ic(self.y_pos)
-        # ic("------END------")
