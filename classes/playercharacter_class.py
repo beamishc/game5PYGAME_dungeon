@@ -9,6 +9,10 @@ class PC(GameObject):
         super().__init__(asset_name, image_path, x, y, width, height)
 
     def move(self, direction_up_down, direction_left_right, max_height, max_width, walls, doors):
+        # assign known previous position
+        prev_x_pos = self.x_pos
+        prev_y_pos = self.y_pos
+
         if direction_up_down > 0:  # We're moving downwards
             self.y_pos -= self.SPEED
         elif direction_up_down < 0:  # We're moving upwards
@@ -32,15 +36,11 @@ class PC(GameObject):
         for wall in walls:
             if self.collidewall(wall):
                 # deal with left and right
-                if direction_left_right > 0:  # We're moving to the right.
-                    self.x_pos = wall[0] - 16
-                elif direction_left_right < 0:  # We're moving to the left.
-                    self.x_pos = wall[0] + wall[2]
+                if direction_left_right != 0:  # We're moving right or left.
+                    self.x_pos = prev_x_pos
                 # deal with up and down
-                if direction_up_down < 0:  # We're moving upwards
-                    self.y_pos = wall[1] - 16
-                elif direction_up_down > 0:  # We're moving downwards
-                    self.y_pos = wall[1] + wall[3]
+                elif direction_up_down != 0:  # We're moving up or down
+                    self.y_pos = prev_y_pos
 
     def detect_collision(self, other_body):
         if self.y_pos > other_body.y_pos + other_body.height or self.y_pos + self.height < other_body.y_pos:
