@@ -220,6 +220,23 @@ class Game:
                 player_character.y_pos = self.rooms[self.location]["y_pos"]
         return player_character
 
+    def finalize(self, did_win):
+        '''Updates the save file with the current level, highest level, and health of the player.
+        If the player has lost the game the health is reset to max health and the times died is increased by 1.'''
+        # update current level and highest levels in save_file
+        self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
+        if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
+            self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
+
+        if did_win:
+            # update current health in save_file
+            self.save_file["CURRENT_HEALTH"] = self.health
+        else:
+            # return current health in save file to max health
+            self.save_file["CURRENT_HEALTH"] = self.save_file["MAX_HEALTH"]
+            # add 1 to times died in save file
+            self.save_file["TIMES_DIED"] += 1
+
     def run_game_loop(self):
         '''Runs the main game loop for each level'''
         is_game_over = False
@@ -286,18 +303,6 @@ class Game:
 
         ic(self.location)
 
-        # update current level and highest levels in save_file
-        self.save_file["CURRENT_LEVEL"] = int(self.current_lvl)
-        if self.save_file["HIGHEST_LEVEL"] < int(self.current_lvl):
-            self.save_file["HIGHEST_LEVEL"] = int(self.current_lvl)
-
-        if did_win:
-            # update current health in save_file
-            self.save_file["CURRENT_HEALTH"] = self.health
-        else:
-            # return current health in save file to max health
-            self.save_file["CURRENT_HEALTH"] = self.save_file["MAX_HEALTH"]
-            # add 1 to times died in save file
-            self.save_file["TIMES_DIED"] += 1
+        self.finalize(did_win)
 
         return did_win
