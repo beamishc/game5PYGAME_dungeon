@@ -3,7 +3,7 @@
     "SCREEN_TITLE": "Prologue",
     "SCREEN_WIDTH": "64 * 16",
     "SCREEN_HEIGHT": "40 * 16",
-    "ASSET_PATH": "assets/kenney_tiny-dungeon/",
+    "ASSET_PATH": "teeny_tiny_game/assets/kenney_tiny-dungeon/",
     "MAIN_LOCATION": "main_map",
     "PRE_PLAYER": "Tiles/tile_0085.png",
     "PLAYER": { "IMAGE": "Tiles/tile_0084.png", "x_pos": 384, "y_pos": 720 },
@@ -22,10 +22,10 @@
                 ,"y_pos": 304} },
     "ROOMS": {
       "main_map": {
-        "BACKGROUND": "assets/lvls/0.Prologue/tiny_dungeon_prologue.tmx",
+        "BACKGROUND": "teeny_tiny_game/assets/lvls/0.Prologue/tiny_dungeon_prologue.tmx",
         "DOOR": "DOOR_OUT"},
       "HOUSE_1": {
-        "BACKGROUND": "assets/lvls/0.Prologue/Rooms/Room_1.tmx",
+        "BACKGROUND": "teeny_tiny_game/assets/lvls/0.Prologue/Rooms/Room_1.tmx",
         "DOOR": "DOOR_1",
         "x_pos": 464,
         "y_pos": 352,
@@ -52,11 +52,11 @@
     }
   },
   "1": {
-    "BACKGROUND": "assets/lvls/1/tiny_dungeon_lvl1.tmx",
+    "BACKGROUND": "teeny_tiny_game/assets/lvls/1/tiny_dungeon_lvl1.tmx",
     "SCREEN_TITLE": "Level 1",
     "SCREEN_WIDTH": "64 * 16",
     "SCREEN_HEIGHT": "40 * 16",
-    "ASSET_PATH": "assets/kenney_tiny-dungeon/",
+    "ASSET_PATH": "teeny_tiny_game/assets/kenney_tiny-dungeon/",
     "MAIN_LOCATION": "main_map",
     "PLAYER": { "IMAGE": "Tiles/tile_0084.png", "x_pos": 312, "y_pos": 624 },
     "ENEMIES": {
@@ -72,7 +72,7 @@
     "DOORS": {},
     "ROOMS": {
       "main_map": {
-        "BACKGROUND": "assets/lvls/1/tiny_dungeon_lvl1.tmx",
+        "BACKGROUND": "teeny_tiny_game/assets/lvls/1/tiny_dungeon_lvl1.tmx",
         "DOOR": "DOOR_OUT"},
       "HOUSE_1": {
         "DOOR": "DOOR_1",

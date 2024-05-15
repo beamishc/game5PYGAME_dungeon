@@ -10,9 +10,9 @@ from icecream import ic
 
 # print(pygame.font.get_fonts())
 
-bit_asset_sheet_path = 'assets/kenney_1-bit-pack/Tilesheet/colored-transparent_packed.png'
+bit_asset_sheet_path = 'teeny_tiny_game/assets/kenney_1-bit-pack/Tilesheet/colored-transparent_packed.png'
 bit_sprite = SpriteSheet(bit_asset_sheet_path, 49, 22, 16, 16, 1)
-door_asset_sheet_path = 'assets/lvls/0.Prologue/Walls, Floor & Doors.png'
+door_asset_sheet_path = 'teeny_tiny_game/assets/lvls/0.Prologue/Walls, Floor & Doors.png'
 bit_sprite = SpriteSheet(bit_asset_sheet_path, 8, 5, 16, 16, 0)
 
 

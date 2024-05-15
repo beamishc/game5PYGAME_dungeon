@@ -14,11 +14,11 @@ BLACK_COLOR = (0, 0, 0)
 clock = pygame.time.Clock()
 
 # load all levels dictionaries
-with open("json/lvls.json") as f:
+with open("teeny_tiny_game/json/lvls.json") as f:
     lvls = json.load(f)
 
 # load all save file dictionaries
-with open('json/save_file.json') as f:
+with open('teeny_tiny_game/json/save_file.json') as f:
     save_dct = json.load(f)
 
 # check a player name is provided
@@ -68,7 +68,7 @@ for lvl in [x for x in lvls.keys() if int(x) >= current_lvl]:
 ic(save_dct)
 
 # dump save file back to json
-with open('json/save_file.json', 'w') as f:
+with open('teeny_tiny_game/json/save_file.json', 'w') as f:
     json.dump(save_dct, f)
 
 
